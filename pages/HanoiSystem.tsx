@@ -122,7 +122,7 @@ const HanoiSystem = () => {
   >("ALL");
   const [searchTerm, setSearchTerm] = useState("");
   const isMobile = useResponsive();
-  const [sheetVisible, setSheetVisible] = useState(false);
+  const [sheetVisible, setSheetVisible] = useState(true);
   const [filterDialogVisible, setFilterDialogVisible] = useState(false);
 
   const filteredFacilities = useMemo(() => {
@@ -232,51 +232,61 @@ const HanoiSystem = () => {
     </div>
   );
 
-  const FacilityDetail = ({ facility }: { facility: Facility }) => (
-    <div className="bg-white h-full flex flex-col">
-       <div className="bg-primary-900 p-4 text-white">
-        <div className="flex justify-between items-start">
-          <span className="text-[10px] font-black uppercase tracking-widest bg-white/20 px-2 py-1 rounded">
-            {facility.category}
-          </span> 
-        </div>
-        <h2 className="text-lg font-black mt-2 leading-tight uppercase">
-          {facility.name}
-        </h2>
-      </div>
-      <div className="p-5 space-y-4">
-        <div className="space-y-4 text-[13px] text-gray-700">
-          <div className="flex items-start gap-3">
-            <MapPin size={18} className="text-red-600 shrink-0 mt-0.5" />
-            <p className="font-bold leading-tight text-gray-900">
-              {facility.address}
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <Phone size={18} className="text-primary-600 shrink-0" />
-            <span className="font-black text-primary-900 text-base">
-              {facility.phone}
+  const FacilityDetail = ({ facility }: { facility: Facility }) => {
+    const handleDirectionsClick = () => {
+      if (facility.coords) {
+        const [lat, lng] = facility.coords;
+        const url = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+        window.open(url, "_blank");
+      }
+    };
+
+    return (
+      <div className="bg-white h-full flex flex-col">
+        <div className="bg-primary-900 p-4 text-white">
+          <div className="flex justify-between items-start">
+            <span className="text-[10px] font-black uppercase tracking-widest bg-white/20 px-2 py-1 rounded">
+              {facility.category}
             </span>
           </div>
+          <h2 className="text-lg font-black mt-2 leading-tight uppercase">
+            {facility.name}
+          </h2>
         </div>
-        <div className="grid grid-cols-2 gap-3 pt-2 border-t border-gray-100">
-          <Button label="Chỉ đường" icon={<Navigation size={16} />} className="!bg-primary-700 hover:!bg-primary-800 !text-white" />
-          <Button label="Gọi điện" icon={<Phone size={16} />} outlined className="!border-gray-200 hover:!border-primary-600 !text-gray-700" onClick={() => (window.location.href = `tel:${facility.phone}`)} />
+        <div className="p-5 space-y-4">
+          <div className="space-y-4 text-[13px] text-gray-700">
+            <div className="flex items-start gap-3">
+              <MapPin size={18} className="text-red-600 shrink-0 mt-0.5" />
+              <p className="font-bold leading-tight text-gray-900">
+                {facility.address}
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <Phone size={18} className="text-primary-600 shrink-0" />
+              <span className="font-black text-primary-900 text-base">
+                {facility.phone}
+              </span>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-3 pt-2 border-t border-gray-100">
+            <Button label="Chỉ đường" icon={<Navigation size={16} />} className="!bg-primary-700 hover:!bg-primary-800 !text-white" onClick={handleDirectionsClick} />
+            <Button label="Gọi điện" icon={<Phone size={16} />} outlined className="!border-gray-200 hover:!border-primary-600 !text-gray-700" onClick={() => (window.location.href = `tel:${facility.phone}`)} />
+          </div>
         </div>
+        {isMobile && (
+          <div className="p-4 mt-auto border-t border-gray-100">
+            <Button
+              label="Quay lại danh sách"
+              icon={<ChevronLeft size={16} />}
+              onClick={() => setSelectedFacility(null)}
+              className="w-full"
+              outlined
+            />
+          </div>
+        )}
       </div>
-       {isMobile && (
-        <div className="p-4 mt-auto border-t border-gray-100">
-          <Button
-            label="Quay lại danh sách"
-            icon={<ChevronLeft size={16} />}
-            onClick={() => setSelectedFacility(null)}
-            className="w-full"
-            outlined
-          />
-        </div>
-      )}
-    </div>
-  );
+    );
+  };
 
 
   return (
@@ -363,7 +373,7 @@ const HanoiSystem = () => {
                 visible={sheetVisible}
                 onHide={() => setSheetVisible(false)}
                 position="bottom"
-                className="h-[50vh] w-full"
+                className="h-[80vh] w-full"
                 showCloseIcon={false}
                 blockScroll
             >
@@ -373,10 +383,11 @@ const HanoiSystem = () => {
                     ) : (                                                                                                                                                 
                       <div className="p-4 border-b border-gray-100 bg-gray-50">
                         <h2 className="text-lg font-bold text-primary-900">Danh sách cơ sở ({filteredFacilities.length})</h2>    
-                            <div className="relative">
+                            <div className="relative mb-3">
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
                                 <input type="text" placeholder="Tìm theo tên hoặc địa chỉ..." className="w-full pl-9 pr-4 py-3 bg-white border border-gray-200 rounded-xl shadow-sm focus:ring-2 focus:ring-primary-100 outline-none text-sm font-bold" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
                             </div>
+                            <FilterButtons />
                         </div>
                     )}
                     {!selectedFacility && <FacilityList />}

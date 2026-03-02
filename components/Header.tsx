@@ -9,23 +9,25 @@ import {
   LogOut,
   User,
   LayoutDashboard,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { MAIN_MENU } from "../constants";
 import { useAuth } from "../AuthContext";
 import { Button } from "@/components/prime";
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [openSubMenu, setOpenSubMenu] = useState<string | null>(null);
   const [currentTime] = useState(new Date());
   const { user, logout } = useAuth(); // Use the context
 
   const location = useLocation();
 
   useEffect(() => {
-    // const timer = setInterval(() => setCurrentTime(new Date()), 1000);
-    // return () => {
-    //   clearInterval(timer);
-    // };
-  }, []);
+    // When the route changes, close the mobile menu
+    setIsMenuOpen(false);
+    setOpenSubMenu(null);
+  }, [location.pathname]);
 
   const getFormattedDateTime = (date: Date) => {
     const days = [
@@ -41,6 +43,67 @@ const Header = () => {
       date.getMonth() + 1
     }/${date.getFullYear()} ${date.toLocaleTimeString("vi-VN")}`;
   };
+
+  const MobileMenu = () => {
+    const activeMenuItem = MAIN_MENU.find(item => item.id === openSubMenu);
+
+    return (
+      <div className="lg:hidden">
+        {openSubMenu && activeMenuItem ? (
+          // Sub-menu view
+          <div className="animate-in slide-in-from-right-5 duration-300">
+             <Button 
+                onClick={() => setOpenSubMenu(null)}
+                className="flex items-center gap-2 px-3 py-3.5 text-left font-bold text-gray-100 hover:bg-white/10 w-full"
+              >
+                <ChevronLeft size={16} />
+                <span>{activeMenuItem.title}</span>
+              </Button>
+            <ul className="flex flex-col">
+              {activeMenuItem.children?.map((child: any) => (
+                <li key={child.id}>
+                  <Link
+                    to={!child.linkUrl ? child.path : child.linkUrl}
+                    className="block px-3 py-3.5 pl-10 text-sm font-medium text-gray-300 hover:bg-white/5"
+                  >
+                    {child.title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : (
+          // Main menu view
+          <ul className="flex flex-col animate-in fade-in duration-200">
+            {MAIN_MENU.map((item) => {
+              const hasChildren = item.children && item.children.length > 0;
+              return (
+                <li key={item.id}>
+                  {hasChildren ? (
+                     <button
+                      onClick={() => setOpenSubMenu(item.id)}
+                      className="flex items-center justify-between w-full px-3 py-3.5 text-left text-[13px] uppercase font-bold text-gray-100 hover:bg-white/10"
+                    >
+                      <span className="tracking-wide">{item.title}</span>
+                      <ChevronRight size={16} />
+                    </button>
+                  ) : (
+                    <Link
+                      to={item.path}
+                      className="block px-3 py-3.5 text-[13px] uppercase font-bold text-gray-100 tracking-wide hover:bg-white/10"
+                    >
+                      {item.title}
+                    </Link>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </div>
+    );
+  };
+
 
   return (
     <header className="sticky top-0 z-50 bg-white shadow-md font-sans">
@@ -137,7 +200,7 @@ const Header = () => {
             </div>
 
             <Button
-              className="lg:hidden absolute top-4 right-4"
+              className="lg:hidden absolute top-4 right-4 !text-gray-600"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               text
               rounded
@@ -154,7 +217,8 @@ const Header = () => {
         } lg:block bg-gradient-to-r from-primary-800 to-primary-900 text-white transition-all duration-300 shadow-lg border-t border-primary-600`}
       >
         <div className="container mx-auto px-4">
-          <ul className="flex flex-col lg:flex-row lg:items-center justify-between py-2 lg:py-0">
+          {/* Desktop Menu */}
+          <ul className="hidden lg:flex lg:items-center justify-between py-2 lg:py-0">
             {MAIN_MENU.map((item) => {
               const isActive =
                 location.pathname.startsWith(item.path) && item.path !== "/";
@@ -182,7 +246,6 @@ const Header = () => {
                         <Link
                           to={item.path}
                           className="flex-grow tracking-wide"
-                          onClick={() => setIsMenuOpen(false)}
                         >
                           {item.title}
                         </Link>
@@ -217,7 +280,6 @@ const Header = () => {
                             : "text-gray-100"
                         }
                         `}
-                      onClick={() => setIsMenuOpen(false)}
                     >
                       {item.title}
                     </Link>
@@ -226,6 +288,8 @@ const Header = () => {
               );
             })}
           </ul>
+           {/* Mobile Menu */}
+           <MobileMenu />
         </div>
       </nav>
     </header>
