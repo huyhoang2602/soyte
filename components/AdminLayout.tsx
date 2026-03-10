@@ -5,6 +5,7 @@ import {
   LogOut,
   LayoutDashboard,
   User,
+  NotebookText,
   CalendarDays,
 } from "lucide-react"; // Add User and CalendarDays icon
 import { useAuth } from "../AuthContext";
@@ -78,6 +79,15 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({
               >
                 <CalendarDays size={18} />
                 <span>Quản lý lịch công tác</span>
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/admin/templates"
+                className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-bold hover:bg-white/10 transition-colors"
+              >
+                <NotebookText size={18} />
+                <span>Quản lý lịch biểu mẫu</span>
               </Link>
             </li>
           </ul>

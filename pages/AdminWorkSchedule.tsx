@@ -20,13 +20,8 @@ import {
   ChevronRight,
 } from "lucide-react";
 import ScheduleForm from "../components/ScheduleForm";
-import {
-  Dropdown,
-  Button,
-  Toast,
-  InputText, 
-} from "@/components/prime"; 
-import { confirmDialog } from "primereact/confirmdialog"; 
+import { Dropdown, Button, Toast, InputText } from "@/components/prime";
+import { confirmDialog } from "primereact/confirmdialog";
 
 const AdminWorkSchedule: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -39,7 +34,7 @@ const AdminWorkSchedule: React.FC = () => {
   >(undefined);
   const toast = useRef<Toast>(null);
 
-  // Pagination states 
+  // Pagination states
   const [rows, setRows] = useState(10); // Items per page
   const [page, setPage] = useState(1); // Current page number (1-based)
 
@@ -120,7 +115,8 @@ const AdminWorkSchedule: React.FC = () => {
       icon: "pi pi-exclamation-triangle",
       acceptLabel: "Xóa",
       rejectLabel: "Hủy",
-      acceptClassName: "p-2 mx-2 border border-red-600 hover:bg-red-700 hover:text-white text-red-600 font-bold  w-[100px]",
+      acceptClassName:
+        "p-2 mx-2 border border-red-600 hover:bg-red-700 hover:text-white text-red-600 font-bold  w-[100px]",
       rejectClassName: "p-2",
       accept: async () => {
         try {
@@ -133,7 +129,7 @@ const AdminWorkSchedule: React.FC = () => {
           });
           fetchSchedules({
             status: filterStatus === "all" ? undefined : filterStatus,
-            searchTerm: searchTerm, 
+            searchTerm: searchTerm,
           });
         } catch (err: any) {
           toast.current?.show({
@@ -151,7 +147,7 @@ const AdminWorkSchedule: React.FC = () => {
     { label: "Đang chờ", value: "pending" },
     { label: "Hoàn thành", value: "completed" },
     { label: "Hủy bỏ", value: "cancelled" },
-  ]; 
+  ];
 
   const onPageChange = (page: number) => {
     setPage(page);
@@ -159,7 +155,7 @@ const AdminWorkSchedule: React.FC = () => {
 
   return (
     <AdminLayout title="Quản lý Lịch công tác">
-      <Toast ref={toast} /> 
+      <Toast ref={toast} />
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-4">
         <StatCard
           icon={CalendarDays}
@@ -276,9 +272,9 @@ const AdminWorkSchedule: React.FC = () => {
                         )}
                       </div>
                       {schedule.location && (
-                      <div className="text-xs text-gray-500 flex items-center gap-1 mt-1">
-                        <MapPin size={12} /> {schedule.location}
-                      </div>
+                        <div className="text-xs text-gray-500 flex items-center gap-1 mt-1">
+                          <MapPin size={12} /> {schedule.location}
+                        </div>
                       )}
                     </td>
                     {/* <td className="p-2 text-sm text-gray-700">
@@ -410,19 +406,19 @@ const StatCard: React.FC<StatCardProps> = ({
   };
   return (
     <>
-    <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4 transition-all transform hover:-translate-y-1">
-      <div
-        className={`w-12 h-12 ${colors[color]} rounded-xl flex items-center justify-center`}
-      >
-        <Icon size={24} />
+      <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4 transition-all transform hover:-translate-y-1">
+        <div
+          className={`w-12 h-12 ${colors[color]} rounded-xl flex items-center justify-center`}
+        >
+          <Icon size={24} />
+        </div>
+        <div>
+          <p className="text-gray-400 text-[10px] font-black uppercase">
+            {title}
+          </p>
+          <h3 className="text-2xl font-black text-gray-800">{value}</h3>
+        </div>
       </div>
-      <div>
-        <p className="text-gray-400 text-[10px] font-black uppercase">
-          {title}
-        </p>
-        <h3 className="text-2xl font-black text-gray-800">{value}</h3>
-      </div>
-    </div> 
     </>
   );
 };
