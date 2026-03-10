@@ -64,7 +64,7 @@ export const SERVICE_CATEGORIES = [
   },
   {
     id: 4,
-    title: "Phòng bệnh – Nâng cao sức khỏe",
+    title: "Phản ánh - Y Tế",
     path: "/news/prevention",
     icon: ShieldPlus,
     containerClass:
@@ -144,7 +144,7 @@ export const SERVICE_CATEGORIES = [
   },
   {
     id: 12,
-    title: "Gương người tốt – việc tốt ngành Y",
+    title: "Giám sát chất lượng dịch vụ y tế",
     path: "/news/good-deeds",
     icon: Award,
     containerClass:
