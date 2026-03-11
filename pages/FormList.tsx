@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { FileText } from 'lucide-react';
-import { api } from '@/api';
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { FileText } from "lucide-react";
+import { api } from "@/api";
 
 const FormList: React.FC = () => {
   const [forms, setForms] = useState([]);
@@ -12,11 +12,11 @@ const FormList: React.FC = () => {
         const res = await api.get("/forms");
 
         const apiForms = res.data.items;
-         
+
         const formattedForms = apiForms.map((item) => ({
           id: item.id,
           name: item.name,
-          status:item.status,
+          status: item.status,
           description: item.description,
         }));
 
